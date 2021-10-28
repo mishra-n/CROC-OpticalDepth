@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.signal as signal
 import scipy.stats as stats
 import scipy.interpolate as interp
+import scipy.integrate as integrate
 import scipy as sp
 import re
 from matplotlib import rc
@@ -11,6 +12,9 @@ from matplotlib import cm
 import os
 import time as time
 import camb
+from numba import jit
+
+#@jit(nopython=True) # Set "nopython" mode for best performance, equivalent to @njit
 
 np.random.seed(2021)
 rc('font',**{'size':'20','family':'serif','serif':['CMU serif']})
@@ -74,15 +78,15 @@ class Universe:
         
         self.CAMB_results = results
     
-    def getCAMBPowerSpectrum(self, var1=2, var2=2, hubble_units=True, k_hunit=True, have_power_spectra=True, nonlinear=False, kmax=2, z_range=np.array([0])):
+    def getCAMBPowerSpectrum(self, var1=2, var2=2, hubble_units=True, k_hunit=True, have_power_spectra=True, nonlinear=False, kmax=20, z_range=np.array([0])):
         
         self.CAMBparams.set_matter_power(redshifts=z_range, kmax=kmax)
                 
         k,z, P_kz = self.CAMB_results.get_linear_matter_power_spectrum(var1=var1, var2=var2, hubble_units=hubble_units, k_hunit=k_hunit, have_power_spectra=have_power_spectra, params=self.CAMBparams, nonlinear=nonlinear)
         
-        self.k = k
-        self.z = z
-        self.P_kz = P_kz
+#        self.k = k
+#        self.z = z
+#        self.P_kz = P_kz
         
         return k,z,P_kz
         
